@@ -1,0 +1,23 @@
+table, th, td {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    line-height: 1.5;
+}
+
+table th {
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    background-color: #f0ffff;
+}
+
+table td {
+    width: 350px;
+    padding: 10px;
+    vertical-align: top;
+}
+
+tr:nth-child(even) {
+    background: #f8f8ff;
+}

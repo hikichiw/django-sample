@@ -1,0 +1,43 @@
+<!doctype html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>本の一覧</title>
+    <link rel="stylesheet" href="{% static 'book/css/book_list.css' %}">
+</head>
+<body>
+<h1>本の一覧</h1>
+<hr>
+<table>
+    <thead>
+        <tr>
+            <th>タイトル</th>
+            <th>在庫数</th>
+            <th>出版社</th>
+            <th>著者</th>
+            <th>概要</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if book_list %}
+        {% for book in book_list %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td align="right">{{ book.quantity }}</td>
+            <td>{{ book.publisher }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.summary }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="5">登録されている本はありません。</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+</body>
+</html>
