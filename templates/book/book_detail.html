@@ -1,0 +1,35 @@
+<!doctype html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>本の詳細</title>
+    <link rel="stylesheet" href="{% static 'book/css/book_list.css' %}">
+</head>
+<body>
+<h1>本の詳細</h1>
+<hr>
+<div>
+    <labeL>タイトル</labeL>
+    <span>{{ book.title }}</span>
+</div>
+<div>
+    <labeL>在庫数</labeL>
+    <span>{{ book.stock.quantity }}</span>
+</div>
+<div>
+    <labeL>出版社</labeL>
+    <span>{{ book.publisher.name }}</span><!-- 変更-->
+</div>
+<div>
+    <labeL>著者</labeL>
+    <span>{% for author in book.authors.all %} {{ author.name }} {% endfor %}</span>
+</div>
+<div>
+    <labeL>概要</labeL>
+    <span>{{ book.summary }}</span>
+</div>
+</body>
+</html>

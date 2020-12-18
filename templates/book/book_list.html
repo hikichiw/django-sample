@@ -25,10 +25,10 @@
         {% if book_list %}
         {% for book in book_list %}
         <tr>
-            <td>{{ book.title }}</td>
-            <td align="right">{{ book.quantity }}</td>
-            <td>{{ book.publisher }}</td>
-            <td>{{ book.author }}</td>
+            <td><a href="{% url 'book:book-detail' book.id %}">{{ book.title }}</a></td>
+            <td align="right">{{ book.stock.quantity }}</td>
+            <td>{{ book.publisher.name }}</td>
+            <td>{% for author in book.authors.all %} {{ author.name }} {% endfor %}</td><!-- 変更-->
             <td>{{ book.summary }}</td>
         </tr>
         {% endfor %}
