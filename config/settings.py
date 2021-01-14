@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'book.apps.BookConfig',
+    'accounts.apps.AccountsConfig', # 追加
 ]
 
 MIDDLEWARE = [

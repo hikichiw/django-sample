@@ -1,14 +1,10 @@
-<!doctype html>
+{% extends "base.html" %}
 {% load static %}
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>本の一覧</title>
+{% block page_title %}本の一覧{% endblock %}
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'book/css/book_list.css' %}">
-</head>
-<body>
+{% endblock %}
+{% block content %}
 <h1>本の一覧</h1>
 <hr>
 <table>
@@ -39,5 +35,4 @@
         {% endif %}
     </tbody>
 </table>
-</body>
-</html>
+{% endblock %}
