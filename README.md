@@ -6,5 +6,5 @@
 * 第３回：準備中
 * 第４回：準備中
 * 第５回：training_5
-* 第6回：training_6
-* 第7回：training_7
+* 第６回：training_6
+* 第７回：training_7
