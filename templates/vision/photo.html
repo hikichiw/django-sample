@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_title %}フォト{% endblock %}
+{% block content %}
+<form action="{% url 'vision:photo' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">登録</button>
+</form>
+<ul>
+    {% for photo in photos %}
+    <li>
+        <a href="{% url 'vision:photo-detail' photo.id %}">{{ photo.title }}<img src="{{ photo.thumbnail.url }}"></a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
