@@ -18,19 +18,20 @@ class LoginForm(forms.Form):
         return username
 
     def clean(self):
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
-        try:
-            user = User.objects.get(username=username)
-        except ObjectDoesNotExist:
-            # ユーザ名を間違えているが、一般的にはセキュリティの観点から
-            # ユーザ名、パスワードのどちらが間違っているかは画面に表示しない
-            raise forms.ValidationError('ユーザ名またはパスワードが間違っています。')
-        # パスワードはハッシュ化されているので平文での検索はできない
-        if not user.check_password(password):
-            # こちらもパスワードを間違えているが、ユーザ名と同様
-            raise forms.ValidationError('ユーザ名またはパスワードが間違っています。')
-        self.user_cache = user
+        if not self.errors:
+            username = self.cleaned_data.get('username')
+            password = self.cleaned_data.get('password')
+            try:
+                user = User.objects.get(username=username)
+            except ObjectDoesNotExist:
+                # ユーザ名を間違えているが、一般的にはセキュリティの観点から
+                # ユーザ名、パスワードのどちらが間違っているかは画面に表示しない
+                raise forms.ValidationError('ユーザ名またはパスワードが間違っています。')
+            # パスワードはハッシュ化されているので平文での検索はできない
+            if not user.check_password(password):
+                # こちらもパスワードを間違えているが、ユーザ名と同様
+                raise forms.ValidationError('ユーザ名またはパスワードが間違っています。')
+            self.user_cache = user
 
     def get_user(self):
         return self.user_cache
