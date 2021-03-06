@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
-from vision.models import Photo
+from vision.models import Image, ImageLabel
 
-admin.site.register(Photo)
+admin.site.register(Image)
+admin.site.register(ImageLabel)

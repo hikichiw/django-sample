@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block page_title %}フォト{% endblock %}
-{% block content %}
-<a href="{% url 'vision:photo' %}">一覧</a>
-<hr>
-<img src='{{ photo.output.url }}' width="600px">
-<h2>{{ photo.title }}</h2>
-<a href="{{ photo.photo.url }}">元画像</a>
-{% endblock %}

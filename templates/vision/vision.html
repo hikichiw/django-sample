@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+{% block page_title %}画像解析{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'vision/css/vision.css' %}">
+{% endblock %}
+{% block content %}
+<section class="jumbotron text-center">
+    <div class="container">
+        <form action="{% url 'vision:vision' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4>解析したい画像を入力してください</h4>
+            {% bootstrap_form form layout='inline' %}
+            <button class="btn btn-primary" type="submit">解析</button>
+        </form>
+    </div>
+</section>
+<div class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            {% for image in images %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <img class="card-img-top" src="{{ image.thumbnail.url }}">
+                    <div class="card-body text-center">
+                        <a class="card-link" href="{% url 'vision:image' image.id %}" target="_blank" rel="noopener noreferrer">{{ image.title }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

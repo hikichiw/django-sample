@@ -4,6 +4,6 @@ from vision import views
 
 app_name = 'vision'
 urlpatterns = [
-    path('photo', views.photo_view, name='photo'),
-    path('photo/<int:photo_id>', views.detail_view, name='photo-detail'),
+    path('', views.vision_view, name='vision'),
+    path('image/<int:image_id>', views.image_view, name='image'),
 ]

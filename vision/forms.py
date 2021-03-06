@@ -1,12 +1,9 @@
-from django.contrib.auth.forms import UsernameField
 from django import forms
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 
-from vision.models import Photo
+from vision.models import Image
 
 
-class PhotoForm(forms.ModelForm):
+class ImageForm(forms.ModelForm):
     class Meta:
-        model = Photo
-        fields = ('title', 'photo')
+        model = Image
+        fields = ('title', 'input_file')

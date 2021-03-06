@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vision.apps.VisionConfig',
-    'accounts.apps.AccountsConfig',
-    'imagekit'
+    'imagekit',
+    'bootstrap4'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +125,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 MEDIA_URL = '/media/'
+
+IMAGEKIT_CACHEFILE_DIR = 'CACHE'

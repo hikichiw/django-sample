@@ -1,20 +1,17 @@
-from enum import Enum
 import io
 
-from google.cloud import vision
 from PIL import Image, ImageDraw
-
-
-class FeatureType(Enum):
-    PAGE = 1
-    BLOCK = 2
-    PARA = 3
-    WORD = 4
-    SYMBOL = 5
+from google.cloud import vision
 
 
 def draw_boxes(image, bounds, color):
-    """Draw a border around the image using the hints in the vector list."""
+    """
+    画像内に枠線を書き出す
+
+    :param image: 画像ファイル
+    :param bounds: 枠線位置
+    :param color: 色
+    """
     draw = ImageDraw.Draw(image)
 
     for bound in bounds:
@@ -23,52 +20,101 @@ def draw_boxes(image, bounds, color):
             bound.vertices[1].x, bound.vertices[1].y,
             bound.vertices[2].x, bound.vertices[2].y,
             bound.vertices[3].x, bound.vertices[3].y], None, color)
-    return image
 
 
-def get_document_bounds(image_file, feature):
-    """Returns document bounds given an image."""
-    client = vision.ImageAnnotatorClient()
+def output_image(bounds, in_file):
+    """
+    枠線を追加した画像出力
 
-    bounds = []
+    :param bounds: 枠線出力位置
+    :param in_file: 入力ファイル
+    :return 画像オブジェクト
+    """
+    image = Image.open(in_file)
+    draw_boxes(image, bounds['block'], 'blue')
+    draw_boxes(image, bounds['paragraph'], 'red')
+    draw_boxes(image, bounds['word'], 'yellow')
+    byte_io = io.BytesIO()
+    image.save(byte_io, format='PNG')
+    return byte_io.getvalue()
 
-    with io.open(image_file, 'rb') as image_file:
-        content = image_file.read()
 
-    image = vision.Image(content=content)
+def label_detection(client, image):
+    """
+    ラベル検出
 
+    :param client: APIクライアント
+    :param image: 画像ファイル
+    :return: 検出結果
+    """
+    labels = []
+    response = client.label_detection(image=image)
+    for label in response.label_annotations:
+        labels.append((label.description, label.score))
+    return labels
+
+
+def document_text_detection(client, image):
+    """
+    OCR検出
+
+    :param client: APIクライアント
+    :param image: 画像ファイル
+    :return: 検出位置
+    """
+    bounds = {
+        'symbol': [],
+        'word': [],
+        'paragraph': [],
+        'block': [],
+    }
     response = client.document_text_detection(image=image)
     document = response.full_text_annotation
-
-    # Collect specified feature bounds by enumerating all document features
     for page in document.pages:
         for block in page.blocks:
             for paragraph in block.paragraphs:
                 for word in paragraph.words:
-                    for symbol in word.symbols:
-                        if (feature == FeatureType.SYMBOL):
-                            bounds.append(symbol.bounding_box)
-
-                    if (feature == FeatureType.WORD):
-                        bounds.append(word.bounding_box)
-
-                if (feature == FeatureType.PARA):
-                    bounds.append(paragraph.bounding_box)
-
-            if (feature == FeatureType.BLOCK):
-                bounds.append(block.bounding_box)
-
-    # The list `bounds` contains the coordinates of the bounding boxes.
+                    bounds['word'].append(word.bounding_box)
+                bounds['paragraph'].append(paragraph.bounding_box)
+            bounds['block'].append(block.bounding_box)
     return bounds
 
 
-def render_doc_text(filein, fileout):
-    image = Image.open(filein)
-    bounds = get_document_bounds(filein, FeatureType.BLOCK)
-    draw_boxes(image, bounds, 'blue')
-    bounds = get_document_bounds(filein, FeatureType.PARA)
-    draw_boxes(image, bounds, 'red')
-    bounds = get_document_bounds(filein, FeatureType.WORD)
-    draw_boxes(image, bounds, 'yellow')
+def text_detection(client, image):
+    """
+    テキスト検出
 
-    image.save(fileout)
+    :param client: APIクライアント
+    :param image: 画像ファイル
+    :return: 検出結果
+    """
+    response = client.text_detection(image=image)
+    text = response.text_annotations
+    return text[0].description
+
+
+def analyze_img(in_file):
+    """
+    画像ファイル解析
+
+    :param in_file: 入力ファイル
+    :return: ラベル検出結果、テキスト検出結果、画像オブジェクト
+    """
+    with io.open(in_file, 'rb') as image_file:
+        content = image_file.read()
+    # noinspection PyTypeChecker
+    image = vision.Image(content=content)
+    # google cloud vision apiクライアント
+    client = vision.ImageAnnotatorClient()
+    # ラベル検出
+    # noinspection PyTypeChecker
+    labels = label_detection(client, image)
+    # ドキュメントテキスト検出
+    # noinspection PyTypeChecker
+    bounds = document_text_detection(client, image)
+    # テキスト検出
+    # noinspection PyTypeChecker
+    texts = text_detection(client, image)
+    # イメージ出力
+    out_image = output_image(bounds, in_file)
+    return labels, texts, out_image
